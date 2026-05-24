@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Antara's Birthday Experience</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap");
+
+      /* =========================================
+       Global Styles & Background
+       ========================================= */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+      }
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+        font-family: "Montserrat", sans-serif;
+        background: #070b19;
+        overflow: hidden;
+        color: white;
+      }
+
+      .bg-space {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 50% 50%, #15244d 0%, #070b19 80%);
+        z-index: 0;
+      }
+      .stars {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: transparent
+          url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiLz48Y2lyY2xlIGN4PSIyNTAiIGN5PSIxNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+PGNpcmNsZSBjeD0iMzUwIiBjeT0iMzUwIiByPSIxIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjkiLz48L3N2Zz4=")
+          repeat;
+        z-index: 1;
+        animation: moveStars 60s linear infinite;
+      }
+      @keyframes moveStars {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -1000px 1000px;
+        }
+      }
+
+      /* Phase Management */
+      .phase {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.6s ease;
+      }
+      .phase.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Headers */
+      .header-title {
+        position: absolute;
+        top: 8%;
+        font-size: 2rem;
+        color: #ffdf00;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 2px 10px rgba(255, 223, 0, 0.4);
+        text-align: center;
+        width: 100%;
+        z-index: 20;
+      }
+
+      /* Action Buttons (Matches Phase 5 & 6) */
+      .btn-action {
+        background: linear-gradient(to bottom, #d81b60, #880e4f);
+        border: 2px solid #ffdf00;
+        color: white;
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 10px 40px;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow:
+          0 5px 15px rgba(0, 0, 0, 0.5),
+          inset 0 2px 5px rgba(255, 255, 255, 0.3);
+        transition: transform 0.2s;
+        z-index: 20;
+      }
+      .btn-action:active {
+        transform: scale(0.95);
+      }
+
+      /* =========================================
+       Phase 1 & 2: Mystery Box
+       ========================================= */
+      .box-wrapper {
+        position: relative;
+        width: 180px;
+        height: 180px;
+        cursor: pointer;
+        margin-top: 50px;
+      }
+      .box-base {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #ff3366, #b30033);
+        border-radius: 10px;
+        position: absolute;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        border: 2px solid #ff99aa;
+        display: flex;
+        justify-content: center;
+        z-index: 2;
+      }
+      .box-base::after {
+        content: "";
+        position: absolute;
+        width: 30px;
+        height: 100%;
+        background: linear-gradient(to right, #e6c200, #ffdf00, #e6c200);
+      } /* Gold Ribbon */
+      .box-lid {
+        width: 190px;
+        height: 50px;
+        background: linear-gradient(135deg, #ff4d79, #cc0044);
+        border-radius: 8px;
+        position: absolute;
+        top: -15px;
+        left: -5px;
+        z-index: 3;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        border: 2px solid #ff99aa;
+        display: flex;
+        justify-content: center;
+        transition: all 0.8s ease;
+        transform-origin: center;
+      }
+      .box-lid::after {
+        content: "";
+        position: absolute;
+        width: 34px;
+        height: 100%;
+        background: linear-gradient(to right, #e6c200, #ffdf00, #e6c200);
+      }
+
+      .glowing-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotateX(70deg);
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #00ffff;
+        border-bottom-color: #ff00ff;
+        box-shadow:
+          0 0 30px #ff00ff,
+          inset 0 0 30px #00ffff;
+        animation: spinRing 3s linear infinite;
+        z-index: 4;
+        pointer-events: none;
+      }
+      @keyframes spinRing {
+        100% {
+          transform: translate(-50%, -50%) rotateX(70deg) rotateZ(360deg);
+        }
+      }
+      .tap-text {
+        margin-top: 60px;
+        font-size: 1.2rem;
+        color: #fff;
+      }
+
+      /* Phase 2 Box Open State */
+      .box-wrapper.opened .box-lid {
+        transform: translateY(-150px) scale(0.8) rotate(-15deg);
+        opacity: 0;
+      }
+      .box-wrapper.opened .glowing-ring {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+        transition: all 1s ease;
+      }
+
+      .reveal-text-container {
+        position: absolute;
+        top: 55%;
+        text-align: center;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 1s ease 0.5s;
+        z-index: 5;
+      }
+      .reveal-text-container.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .reveal-hb {
+        font-family: "Playfair Display", serif;
+        font-size: 2.5rem;
+        color: #fff;
+        margin-bottom: 5px;
+        text-shadow: 0 2px 5px #000;
+      }
+      .reveal-name {
+        font-size: 5rem;
+        font-weight: 900;
+        background: linear-gradient(to bottom, #ffea00, #ff0055);
+        -webkit-background-clip: text;
+        color: transparent;
+        -webkit-text-stroke: 1px #fff;
+        text-shadow:
+          0 0 20px rgba(255, 0, 85, 0.8),
+          0 0 40px rgba(255, 234, 0, 0.6);
+      }
+
+      /* =========================================
+       Phase 3: Blow Candles
+       ========================================= */
+      .blow-counter {
+        position: absolute;
+        top: 15%;
+        left: 10%;
+        background: rgba(136, 14, 79, 0.8);
+        border-left: 4px solid #ff4081;
+        padding: 5px 15px;
+        font-size: 1rem;
+        color: #ffdf00;
+        border-radius: 0 20px 20px 0;
+        z-index: 20;
+      }
+
+      .cake-wrapper {
+        position: relative;
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .cake-base {
+        width: 280px;
+        height: 100px;
+        background: linear-gradient(to right, #d4a373, #faedcd, #d4a373);
+        border-radius: 50% 50% 10px 10px;
+        position: relative;
+        border-bottom: 8px solid #a8794f;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      }
+      .cake-icing {
+        position: absolute;
+        top: -20px;
+        width: 100%;
+        height: 50px;
+        background: #fff5eb;
+        border-radius: 50%;
+        box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.1);
+        border: 2px solid #ffdf00;
+      }
+      .cake-icing::after {
+        content: "";
+        position: absolute;
+        top: 25px;
+        left: -5px;
+        width: 290px;
+        height: 30px;
+        background: radial-gradient(
+            circle at 15px 15px,
+            #fff5eb 15px,
+            transparent 16px
+          )
+          repeat-x;
+        background-size: 30px 30px;
+      }
+
+      .candles-group {
+        position: absolute;
+        top: -60px;
+        display: flex;
+        gap: 20px;
+        z-index: 10;
+      }
+      .candle-item {
+        width: 12px;
+        height: 50px;
+        background: repeating-linear-gradient(
+          45deg,
+          #fff,
+          #fff 5px,
+          #ff0055 5px,
+          #ff0055 10px
+        );
+        position: relative;
+        cursor: pointer;
+        border-radius: 2px;
+      }
+      .flame-ico {
+        width: 16px;
+        height: 26px;
+        background: #ffaa00;
+        border-radius: 50% 50% 20% 20%;
+        position: absolute;
+        top: -28px;
+        left: -2px;
+        box-shadow:
+          0 0 15px #ffaa00,
+          0 0 25px #ff0000;
+        animation: flicker 0.1s infinite alternate;
+        transition: opacity 0.3s;
+      }
+      .candle-item.blown .flame-ico {
+        opacity: 0;
+      }
+      .candle-item.blown::after {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 0;
+        width: 10px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.5);
+        filter: blur(3px);
+        animation: smoke 2s forwards;
+      }
+
+      .progress-track {
+        width: 300px;
+        height: 12px;
+        border: 2px solid #ffdf00;
+        border-radius: 10px;
+        margin-top: 50px;
+        padding: 2px;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ff0055, #ffea00);
+        border-radius: 5px;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px #ffea00;
+      }
+
+      @keyframes flicker {
+        to {
+          transform: scale(1.1) rotate(2deg);
+        }
+      }
+      @keyframes smoke {
+        to {
+          transform: translateY(-40px) scale(2);
+          opacity: 0;
+        }
+      }
+
+      /* =========================================
+       Phase 4: Mystery Wishes
+       ========================================= */
+      .subtitle {
+        position: absolute;
+        top: 14%;
+        color: #fff;
+        font-size: 1.1rem;
+      }
+      .grid-boxes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: 40px;
+        transition: opacity 0.5s;
+      }
+      .mystery-q-box {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #1e88e5, #0d47a1);
+        border: 4px solid #ffdf00;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 4rem;
+        color: #ffdf00;
+        font-weight: 900;
+        text-shadow: 0 2px 5px #000;
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        transition: transform 0.2s;
+      }
+      .mystery-q-box:hover {
+        transform: scale(1.05) translateY(-5px);
+      }
+
+      .scroll-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 400px;
+        z-index: 15;
+      }
+      .scroll-paper {
+        background: #f3e5ab;
+        border: 2px solid #cdaa6a;
+        border-radius: 5px;
+        padding: 30px 20px;
+        color: #4a3b2c;
+        font-family: "Playfair Display", serif;
+        font-size: 1.3rem;
+        text-align: center;
+        font-weight: bold;
+        position: relative;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+      }
+      /* Scroll ends */
+      .scroll-paper::before,
+      .scroll-paper::after {
+        content: "";
+        position: absolute;
+        left: -10px;
+        width: calc(100% + 20px);
+        height: 20px;
+        background: linear-gradient(to right, #d4a373, #e9c46a, #d4a373);
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
+      .scroll-paper::before {
+        top: -10px;
+      }
+      .scroll-paper::after {
+        bottom: -10px;
+      }
+
+      .scroll-container.show {
+        display: flex;
+        animation: unroll 0.6s ease-out;
+      }
+      @keyframes unroll {
+        0% {
+          transform: translate(-50%, -50%) scaleY(0);
+        }
+        100% {
+          transform: translate(-50%, -50%) scaleY(1);
+        }
+      }
+
+      /* =========================================
+       Phase 5: The Letter
+       ========================================= */
+      .letter-scene {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 30px;
+        margin-top: -30px;
+        margin-bottom: 50px;
+      }
+      .env-wrapper {
+        width: 160px;
+        height: 110px;
+        background: #f1c40f;
+        position: relative;
+        border-radius: 4px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+      .env-flap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-left: 80px solid transparent;
+        border-right: 80px solid transparent;
+        border-top: 60px solid #f39c12;
+        z-index: 3;
+      }
+      .env-body {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-left: 80px solid #e67e22;
+        border-right: 80px solid #e67e22;
+        border-bottom: 50px solid #d35400;
+        z-index: 2;
+      }
+
+      .arrow-icon {
+        font-size: 2rem;
+        color: #ffdf00;
+        animation: bounceX 1s infinite alternate;
+      }
+      @keyframes bounceX {
+        to {
+          transform: translateX(15px);
+        }
+      }
+
+      .open-card-preview {
+        width: 160px;
+        height: 200px;
+        background: #fffdf5;
+        border: 2px solid #d4af37;
+        border-radius: 4px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        position: relative;
+      }
+      .open-card-preview::before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border: 1px dashed #d4af37;
+        pointer-events: none;
+      }
+      .preview-photo {
+        width: 60px;
+        height: 60px;
+        background: #ddd;
+        border: 2px solid #d4af37;
+        border-radius: 4px;
+        margin-top: 10px;
+        object-fit: cover;
+      }
+      .preview-seal {
+        position: absolute;
+        bottom: -15px;
+        right: 20px;
+        width: 30px;
+        height: 30px;
+        background: #c0392b;
+        border-radius: 50%;
+        border: 2px solid #ffdf00;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      /* =========================================
+       Phase 6: Finale
+       ========================================= */
+      .finale-card-container {
+        width: 85%;
+        max-width: 600px;
+        background: #fffdf5;
+        border: 4px solid #d4af37;
+        border-radius: 8px;
+        padding: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        margin-bottom: 40px;
+      }
+      .finale-card-container::before {
+        content: "";
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        border: 1px dashed #d4af37;
+        pointer-events: none;
+      }
+
+      .finale-text {
+        flex: 1;
+        text-align: left;
+        padding-right: 20px;
+        font-family: "Playfair Display", serif;
+      }
+      .finale-text h1 {
+        font-size: 2.8rem;
+        color: #2c3e50;
+        line-height: 1.1;
+        margin: 0;
+      }
+      .finale-text h1 span {
+        color: #880e4f;
+      }
+
+      .finale-photo-frame {
+        width: 140px;
+        height: 160px;
+        padding: 8px;
+        background: #d4af37;
+        border-radius: 5px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+      .finale-photo-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 2px solid #fff;
+      }
+
+      /* CSS Balloons */
+      .balloons-layer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        pointer-events: none;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 5%;
+      }
+      .balloon-bunch {
+        position: relative;
+        top: 30%;
+        width: 100px;
+      }
+      .balloon {
+        position: absolute;
+        width: 50px;
+        height: 60px;
+        border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+        box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.2);
+        animation: floatBalloon 4s ease-in-out infinite alternate;
+      }
+      .balloon::before {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 10px solid inherit;
+      }
+      .balloon::after {
+        content: "";
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        width: 1px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.4);
+      }
+
+      .b-pink {
+        background: radial-gradient(circle at 30% 30%, #ff99cc, #d81b60);
+        border-bottom-color: #d81b60;
+        left: 0;
+        top: 20px;
+        animation-delay: 0s;
+      }
+      .b-purple {
+        background: radial-gradient(circle at 30% 30%, #d499ff, #6a1b9a);
+        border-bottom-color: #6a1b9a;
+        left: 40px;
+        top: 0;
+        z-index: 2;
+        animation-delay: 1s;
+      }
+      .b-gold {
+        background: radial-gradient(circle at 30% 30%, #ffee99, #f39c12);
+        border-bottom-color: #f39c12;
+        left: 20px;
+        top: 40px;
+        animation-delay: 2s;
+      }
+
+      @keyframes floatBalloon {
+        0% {
+          transform: translateY(0) rotate(-2deg);
+        }
+        100% {
+          transform: translateY(-20px) rotate(2deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-space"></div>
+    <div class="stars"></div>
+
+    <div class="phase active" id="phase1">
+      <div class="header-title">Mystery Box</div>
+      <div class="box-wrapper" onclick="openMysteryBox()">
+        <div class="glowing-ring"></div>
+        <div class="box-base"></div>
+        <div class="box-lid"></div>
+      </div>
+      <div class="tap-text">Tap to Open</div>
+    </div>
+
+    <div class="phase" id="phase2">
+      <div class="header-title">Happy Birthday Reveal</div>
+      <div class="box-wrapper opened">
+        <div class="glowing-ring"></div>
+        <div class="box-base"></div>
+        <div class="box-lid"></div>
+      </div>
+      <div class="reveal-text-container" id="revealText">
+        <div class="reveal-hb">Happy Birthday</div>
+        <div class="reveal-name">ANTARA</div>
+      </div>
+    </div>
+
+    <div class="phase" id="phase3">
+      <div class="header-title">Blow the Candles</div>
+      <div class="blow-counter" id="blowCounter">BLOW COUNTER: 0/5</div>
+
+      <div class="cake-wrapper">
+        <div class="candles-group" id="candleGroup">
+          <div class="candle-item" onclick="blowCandle(this)">
+            <div class="flame-ico"></div>
+          </div>
+          <div
+            class="candle-item"
+            onclick="blowCandle(this)"
+            style="margin-top: -10px"
+          >
+            <div class="flame-ico"></div>
+          </div>
+          <div
+            class="candle-item"
+            onclick="blowCandle(this)"
+            style="margin-top: -15px"
+          >
+            <div class="flame-ico"></div>
+          </div>
+          <div
+            class="candle-item"
+            onclick="blowCandle(this)"
+            style="margin-top: -10px"
+          >
+            <div class="flame-ico"></div>
+          </div>
+          <div class="candle-item" onclick="blowCandle(this)">
+            <div class="flame-ico"></div>
+          </div>
+        </div>
+        <div class="cake-icing"></div>
+        <div class="cake-base"></div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="blowProgress"></div>
+      </div>
+    </div>
+
+    <div class="phase" id="phase4">
+      <div class="header-title">Mystery Wishes</div>
+      <div class="subtitle" id="p4Subtitle">Pick a Mystery Box!</div>
+
+      <div class="grid-boxes" id="wishBoxes">
+        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
+        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
+        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
+        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
+      </div>
+
+      <div class="scroll-container" id="wishScroll">
+        <div class="scroll-paper">
+          Best wishes on your special day! Let's visit the temple together soon
+          to seek blessings. 🙏
+        </div>
+        <button
+          class="btn-action"
+          style="margin-top: 30px"
+          onclick="goToPhase(5)"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+
+    <div class="phase" id="phase5">
+      <div class="header-title">The Letter</div>
+
+      <div class="letter-scene">
+        <div class="env-wrapper">
+          <div class="env-flap"></div>
+          <div class="env-body"></div>
+        </div>
+
+        <div class="arrow-icon">➔</div>
+
+        <div class="open-card-preview">
+          <img
+            src="/api/placeholder/60/60"
+            alt="Antara"
+            class="preview-photo"
+          />
+          <div
+            style="
+              margin-top: 10px;
+              width: 80%;
+              height: 4px;
+              background: #e0e0e0;
+            "
+          ></div>
+          <div
+            style="
+              margin-top: 5px;
+              width: 60%;
+              height: 4px;
+              background: #e0e0e0;
+            "
+          ></div>
+          <div class="preview-seal"></div>
+        </div>
+      </div>
+
+      <button class="btn-action" onclick="goToPhase(6)">Open</button>
+    </div>
+
+    <div class="phase" id="phase6">
+      <div class="header-title">Finale</div>
+
+      <div class="balloons-layer">
+        <div class="balloon-bunch">
+          <div class="balloon b-pink"></div>
+          <div class="balloon b-purple"></div>
+          <div class="balloon b-gold"></div>
+        </div>
+        <div class="balloon-bunch">
+          <div class="balloon b-pink" style="left: 20px"></div>
+          <div class="balloon b-purple" style="left: -20px; top: 10px"></div>
+          <div class="balloon b-gold" style="left: 0px; top: 40px"></div>
+        </div>
+      </div>
+
+      <div class="finale-card-container">
+        <div class="finale-text">
+          <h1>Happy<br />Birthday<br /><span>Antara!</span></h1>
+        </div>
+        <div class="finale-photo-frame">
+          <img src="/api/placeholder/140/160" alt="Antara" />
+        </div>
+      </div>
+
+      <button class="btn-action" onclick="resetApp()">Replay</button>
+    </div>
+
+    <script>
+      // --- Phase Navigation ---
+      function goToPhase(num) {
+        document
+          .querySelectorAll(".phase")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById(`phase${num}`).classList.add("active");
+
+        // Trigger specific animations on enter
+        if (num === 2) triggerConfetti();
+        if (num === 6) startFinaleEffects();
+      }
+
+      // --- Phase 1 & 2 Logic ---
+      function openMysteryBox() {
+        // Find the box in phase 1, trigger open animation
+        const box = document.querySelector("#phase1 .box-wrapper");
+        box.classList.add("opened");
+        document.querySelector("#phase1 .tap-text").style.opacity = 0;
+
+        // Small puff of confetti on click
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+
+        // Transition to Phase 2 automatically
+        setTimeout(() => {
+          goToPhase(2);
+          document.getElementById("revealText").classList.add("show");
+
+          // Wait, then move to Phase 3 (Candles)
+          setTimeout(() => {
+            goToPhase(3);
+          }, 4000);
+        }, 800);
+      }
+
+      // --- Phase 3 Logic ---
+      let blows = 0;
+      function blowCandle(element) {
+        if (element.classList.contains("blown")) return;
+
+        element.classList.add("blown");
+        blows++;
+
+        document.getElementById("blowCounter").innerText =
+          `BLOW COUNTER: ${blows}/5`;
+        document.getElementById("blowProgress").style.width = `${blows * 20}%`;
+
+        if (blows === 5) {
+          setTimeout(() => {
+            goToPhase(4);
+          }, 1500);
+        }
+      }
+
+      // --- Phase 4 Logic ---
+      function selectWishBox() {
+        document.getElementById("wishBoxes").style.display = "none";
+        document.getElementById("p4Subtitle").style.display = "none";
+        document.getElementById("wishScroll").classList.add("show");
+        confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 } });
+      }
+
+      // --- Phase 6 Logic (Finale Effects) ---
+      let fireworksInterval;
+      function startFinaleEffects() {
+        const duration = 15 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = {
+          startVelocity: 30,
+          spread: 360,
+          ticks: 60,
+          zIndex: 0,
+        };
+
+        function randomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        fireworksInterval = setInterval(function () {
+          const timeLeft = animationEnd - Date.now();
+          if (timeLeft <= 0) return clearInterval(fireworksInterval);
+          const particleCount = 50 * (timeLeft / duration);
+          confetti(
+            Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+            }),
+          );
+          confetti(
+            Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+            }),
+          );
+        }, 250);
+      }
+
+      function triggerConfetti() {
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+      }
+
+      // --- Reset App ---
+      function resetApp() {
+        clearInterval(fireworksInterval);
+
+        // Reset Phase 1/2
+        document
+          .querySelector("#phase1 .box-wrapper")
+          .classList.remove("opened");
+        document.querySelector("#phase1 .tap-text").style.opacity = 1;
+        document.getElementById("revealText").classList.remove("show");
+
+        // Reset Phase 3
+        blows = 0;
+        document.getElementById("blowCounter").innerText = `BLOW COUNTER: 0/5`;
+        document.getElementById("blowProgress").style.width = `0%`;
+        document
+          .querySelectorAll(".candle-item")
+          .forEach((c) => c.classList.remove("blown"));
+
+        // Reset Phase 4
+        document.getElementById("wishBoxes").style.display = "grid";
+        document.getElementById("p4Subtitle").style.display = "block";
+        document.getElementById("wishScroll").classList.remove("show");
+
+        // Go home
+        goToPhase(1);
+      }
+    </script>
+  </body>
+</html>

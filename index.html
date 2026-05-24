@@ -864,6 +864,189 @@
           opacity: 1;
         }
       }
+      /* =========================================
+   Finale Phase Container & Background
+   ========================================= */
+      .finale-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        background: radial-gradient(circle at center, #111e3d 0%, #050a17 100%);
+        overflow: hidden;
+        padding: 40px;
+      }
+
+      /* =========================================
+   The Expanded Vintage Board Design
+   ========================================= */
+      .finale-board.big-board {
+        position: relative;
+        width: 90%;
+        max-width: 950px; /* Increased from 750px for a much grander presence */
+        background: #fdf6e2;
+        background-image: radial-gradient(
+          rgba(0, 0, 0, 0.03) 1.5px,
+          transparent 0
+        );
+        background-size: 28px 28px;
+        border: 6px double #c5a059; /* Thicker borders to scale with the size */
+        border-radius: 6px;
+        padding: 60px 80px; /* Expanded padding for a premium, spacious layout */
+        box-shadow:
+          0 35px 80px rgba(0, 0, 0, 0.8),
+          inset 0 0 60px rgba(139, 115, 85, 0.2);
+        z-index: 2;
+      }
+
+      .finale-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 50px;
+      }
+
+      /* =========================================
+   Massive Upscaled Typography
+   ========================================= */
+      .finale-title.massive-title {
+        font-family: "Playfair Display", "Georgia", serif;
+        font-size: 4.5rem; /* Increased from 3.2rem for impactful scale */
+        font-weight: 700;
+        color: #2b1c11;
+        line-height: 1.1;
+        text-align: left;
+        letter-spacing: -2px;
+      }
+
+      .finale-title .name-highlight {
+        font-family: "Playfair Display", "Georgia", serif;
+        display: inline-block;
+        margin-top: 10px;
+        color: #2b1c11;
+      }
+
+      /* =========================================
+   Enlarged Ornate Gold Photo Frame
+   ========================================= */
+      .finale-photo {
+        position: relative;
+        z-index: 5;
+      }
+
+      .gold-frame-molding.jumbo-frame {
+        padding: 16px; /* Richer frame border thickness */
+        background: linear-gradient(
+          135deg,
+          #bf953f 0%,
+          #fcf6ba 25%,
+          #b38728 50%,
+          #fbf5b7 75%,
+          #aa771c 100%
+        );
+        border-radius: 4px;
+        box-shadow:
+          0 25px 50px rgba(0, 0, 0, 0.5),
+          inset 3px 3px 7px rgba(255, 255, 255, 0.6),
+          inset -3px -3px 7px rgba(0, 0, 0, 0.4);
+        display: inline-block;
+      }
+
+      .gold-frame-molding.jumbo-frame::before {
+        content: "";
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        border: 2px solid #5a451e;
+        pointer-events: none;
+        opacity: 0.4;
+      }
+
+      .gold-frame-molding.jumbo-frame img {
+        display: block;
+        width: 240px; /* Increased width from 170px */
+        height: 300px; /* Increased height from 210px */
+        object-fit: cover;
+        border: 4px solid #2b1c11;
+        box-shadow: inset 0 6px 15px rgba(0, 0, 0, 0.6);
+      }
+
+      /* =========================================
+   Ornate Corner Accents (Adjusted spacing)
+   ========================================= */
+      .corner-accent {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        border: 1px solid rgba(197, 160, 89, 0.4);
+      }
+      .top-left {
+        top: 16px;
+        left: 16px;
+        border-right: none;
+        border-bottom: none;
+      }
+      .top-right {
+        top: 16px;
+        right: 16px;
+        border-left: none;
+        border-bottom: none;
+      }
+      .bottom-left {
+        bottom: 16px;
+        left: 16px;
+        border-right: none;
+        border-top: none;
+      }
+      .bottom-right {
+        bottom: 16px;
+        right: 16px;
+        border-left: none;
+        border-top: none;
+      }
+
+      /* =========================================
+   Balloons (Slightly pushed back to account for wider board)
+   ========================================= */
+      .balloon-bunch.left {
+        left: -60px;
+      }
+      .balloon-bunch.right {
+        right: -60px;
+      }
+
+      /* Responsive tweaks for mid-size displays */
+      @media (max-width: 900px) {
+        .finale-board.big-board {
+          padding: 40px;
+        }
+        .finale-title.massive-title {
+          font-size: 3.5rem;
+        }
+        .gold-frame-molding.jumbo-frame img {
+          width: 200px;
+          height: 250px;
+        }
+      }
+
+      @media (max-width: 650px) {
+        .finale-content {
+          flex-direction: column-reverse;
+          text-align: center;
+          gap: 30px;
+        }
+        .finale-title.massive-title {
+          text-align: center;
+          font-size: 2.8rem;
+        }
+        .balloon-bunch {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1259,6 +1442,7 @@
       <div class="stars" id="stars4"></div>
       <div class="p4-title">MYSTERY WISHES</div>
       <div class="p4-subtitle">Pick a Mystery Box!</div>
+      <div class="p4-subtitle">Take Screenshot & Send Me!</div>
       <div style="position: relative; display: flex; align-items: center">
         <div class="mystery-grid" id="mysteryGrid">
           <div class="mbox" onclick="revealWish(0)">
@@ -1411,16 +1595,39 @@
             style="background: #9b59b6; animation-delay: 1.3s"
           ></div>
         </div>
-        <div class="finale-board">
-          <div style="overflow: hidden">
-            <div class="finale-photo">
-              <div class="finale-photo-inner">
-                <div class="finale-head"></div>
-                <div class="finale-body"></div>
+        <div class="finale-wrapper">
+          <div class="balloon-bunch left">
+            <div class="balloon pink"></div>
+            <div class="balloon purple"></div>
+            <div class="balloon gold"></div>
+            <div class="balloon peach"></div>
+          </div>
+
+          <div class="finale-board big-board">
+            <div class="corner-accent top-left"></div>
+            <div class="corner-accent top-right"></div>
+            <div class="corner-accent bottom-left"></div>
+            <div class="corner-accent bottom-right"></div>
+
+            <div class="finale-content">
+              <div class="finale-title massive-title">
+                Happy<br />Birthday<br /><span class="name-highlight"
+                  >Antara!</span
+                >
+              </div>
+
+              <div class="finale-photo">
+                <div class="gold-frame-molding jumbo-frame">
+                  <img src="/src/antara.jpeg" alt="Birthday Girl" />
+                </div>
               </div>
             </div>
-            <div class="finale-title">Happy<br />Birthday<br />Antara!</div>
-            <div style="clear: both"></div>
+          </div>
+
+          <div class="balloon-bunch right">
+            <div class="balloon purple"></div>
+            <div class="balloon pink"></div>
+            <div class="balloon gold"></div>
           </div>
         </div>
         <button class="replay-btn" onclick="replay()">↺ REPLAY</button>
@@ -1553,14 +1760,17 @@
         },
         {
           emoji: "✨",
-          text: "Wishing you a year filled with love, laughter, and all the magic you deserve!",
+          text: "Happy Birthday, Antara! 🎁 This box entitles you to one free treat! Phuchka, ice cream, or whatever you're craving today—it's on me! 🍦",
         },
         {
           emoji: "🎂",
-          text: "Hope this birthday brings you everything your heart desires. You're so loved!",
+          text: "Happy Birthday! Get ready for a fun day out!",
         },
       ];
-      function revealWish(idx) {
+      let hasOpened = false;
+      async function revealWish(idx) {
+        if (hasOpened) return;
+        hasOpened = true;
         const scroll = document.getElementById("wishScroll");
         document.getElementById("wishEmoji").textContent = wishes[idx].emoji;
         document.getElementById("wishText").textContent = wishes[idx].text;
@@ -1569,6 +1779,35 @@
         boxes[idx].style.background = "linear-gradient(135deg,#2a6b3e,#1a4a2e)";
         boxes[idx].style.borderColor = "#FFD700";
         boxes[idx].querySelector(".mbox-inner").textContent = wishes[idx].emoji;
+
+        // 2. Send the selected box value to your API
+        // try {
+        //   // Replace this URL with your actual API endpoint
+        //   const apiUrl = "https://your-api-domain.com/endpoint";
+
+        //   // Create the data object you want to send
+        //   const payload = {
+        //     boxIndex: idx,
+        //     selectedEmoji: wishes[idx].emoji,
+        //     selectedText: wishes[idx].text,
+        //   };
+
+        //   const response = await fetch(apiUrl, {
+        //     method: "POST", // or "PUT" depending on your API
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(payload),
+        //   });
+
+        //   if (response.ok) {
+        //     console.log("Successfully sent the box value to the API!");
+        //   } else {
+        //     console.error("API returned an error:", response.status);
+        //   }
+        // } catch (error) {
+        //   console.error("Failed to send data to the API:", error);
+        // }
       }
 
       function openEnvelope() {

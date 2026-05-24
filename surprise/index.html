@@ -1,1000 +1,1642 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Antara's Birthday Experience</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <title>Happy Birthday Antara!</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap");
-
-      /* =========================================
-       Global Styles & Background
-       ========================================= */
+      @import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Playfair+Display:ital,wght@1,700&family=Montserrat:wght@400;600;700;800&display=swap");
       * {
-        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        user-select: none;
+        box-sizing: border-box;
       }
-      body,
-      html {
-        width: 100%;
-        height: 100%;
+      body {
+        background: #0a0a2e;
         font-family: "Montserrat", sans-serif;
-        background: #070b19;
         overflow: hidden;
-        color: white;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-
-      .bg-space {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at 50% 50%, #15244d 0%, #070b19 80%);
-        z-index: 0;
+      .stage {
+        display: none;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(ellipse at center, #0d1b4b 0%, #060920 70%);
+        position: relative;
+        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      .stage.active {
+        display: flex;
       }
       .stars {
         position: absolute;
-        width: 100%;
-        height: 100%;
-        background: transparent
-          url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjgiLz48Y2lyY2xlIGN4PSIyNTAiIGN5PSIxNTAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC41Ii8+PGNpcmNsZSBjeD0iMzUwIiBjeT0iMzUwIiByPSIxIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjkiLz48L3N2Zz4=")
-          repeat;
-        z-index: 1;
-        animation: moveStars 60s linear infinite;
-      }
-      @keyframes moveStars {
-        from {
-          background-position: 0 0;
-        }
-        to {
-          background-position: -1000px 1000px;
-        }
-      }
-
-      /* Phase Management */
-      .phase {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 10;
-        opacity: 0;
+        inset: 0;
         pointer-events: none;
-        transition: opacity 0.6s ease;
       }
-      .phase.active {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      /* Headers */
-      .header-title {
+      .star {
         position: absolute;
-        top: 8%;
-        font-size: 2rem;
-        color: #ffdf00;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 2px 10px rgba(255, 223, 0, 0.4);
-        text-align: center;
-        width: 100%;
-        z-index: 20;
-      }
-
-      /* Action Buttons (Matches Phase 5 & 6) */
-      .btn-action {
-        background: linear-gradient(to bottom, #d81b60, #880e4f);
-        border: 2px solid #ffdf00;
-        color: white;
-        font-family: "Montserrat", sans-serif;
-        font-size: 1.2rem;
-        font-weight: bold;
-        padding: 10px 40px;
-        border-radius: 30px;
-        cursor: pointer;
-        box-shadow:
-          0 5px 15px rgba(0, 0, 0, 0.5),
-          inset 0 2px 5px rgba(255, 255, 255, 0.3);
-        transition: transform 0.2s;
-        z-index: 20;
-      }
-      .btn-action:active {
-        transform: scale(0.95);
-      }
-
-      /* =========================================
-       Phase 1 & 2: Mystery Box
-       ========================================= */
-      .box-wrapper {
-        position: relative;
-        width: 180px;
-        height: 180px;
-        cursor: pointer;
-        margin-top: 50px;
-      }
-      .box-base {
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #ff3366, #b30033);
-        border-radius: 10px;
-        position: absolute;
-        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-        border: 2px solid #ff99aa;
-        display: flex;
-        justify-content: center;
-        z-index: 2;
-      }
-      .box-base::after {
-        content: "";
-        position: absolute;
-        width: 30px;
-        height: 100%;
-        background: linear-gradient(to right, #e6c200, #ffdf00, #e6c200);
-      } /* Gold Ribbon */
-      .box-lid {
-        width: 190px;
-        height: 50px;
-        background: linear-gradient(135deg, #ff4d79, #cc0044);
-        border-radius: 8px;
-        position: absolute;
-        top: -15px;
-        left: -5px;
-        z-index: 3;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-        border: 2px solid #ff99aa;
-        display: flex;
-        justify-content: center;
-        transition: all 0.8s ease;
-        transform-origin: center;
-      }
-      .box-lid::after {
-        content: "";
-        position: absolute;
-        width: 34px;
-        height: 100%;
-        background: linear-gradient(to right, #e6c200, #ffdf00, #e6c200);
-      }
-
-      .glowing-ring {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotateX(70deg);
-        width: 280px;
-        height: 280px;
+        background: #fff;
         border-radius: 50%;
-        border: 3px solid transparent;
-        border-top-color: #00ffff;
-        border-bottom-color: #ff00ff;
-        box-shadow:
-          0 0 30px #ff00ff,
-          inset 0 0 30px #00ffff;
-        animation: spinRing 3s linear infinite;
-        z-index: 4;
-        pointer-events: none;
+        animation: twinkle 2s infinite alternate;
       }
-      @keyframes spinRing {
+      @keyframes twinkle {
+        0% {
+          opacity: 0.2;
+        }
         100% {
-          transform: translate(-50%, -50%) rotateX(70deg) rotateZ(360deg);
+          opacity: 1;
         }
       }
-      .tap-text {
-        margin-top: 60px;
-        font-size: 1.2rem;
-        color: #fff;
-      }
-
-      /* Phase 2 Box Open State */
-      .box-wrapper.opened .box-lid {
-        transform: translateY(-150px) scale(0.8) rotate(-15deg);
-        opacity: 0;
-      }
-      .box-wrapper.opened .glowing-ring {
-        width: 500px;
-        height: 500px;
-        opacity: 0;
-        transition: all 1s ease;
-      }
-
-      .reveal-text-container {
+      .confetti-container {
         position: absolute;
-        top: 55%;
-        text-align: center;
-        opacity: 0;
-        transform: scale(0.5);
-        transition: all 1s ease 0.5s;
-        z-index: 5;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
       }
-      .reveal-text-container.show {
-        opacity: 1;
-        transform: scale(1);
-      }
-      .reveal-hb {
-        font-family: "Playfair Display", serif;
-        font-size: 2.5rem;
-        color: #fff;
-        margin-bottom: 5px;
-        text-shadow: 0 2px 5px #000;
-      }
-      .reveal-name {
-        font-size: 5rem;
-        font-weight: 900;
-        background: linear-gradient(to bottom, #ffea00, #ff0055);
-        -webkit-background-clip: text;
-        color: transparent;
-        -webkit-text-stroke: 1px #fff;
-        text-shadow:
-          0 0 20px rgba(255, 0, 85, 0.8),
-          0 0 40px rgba(255, 234, 0, 0.6);
-      }
-
-      /* =========================================
-       Phase 3: Blow Candles
-       ========================================= */
-      .blow-counter {
-        position: absolute;
-        top: 15%;
-        left: 10%;
-        background: rgba(136, 14, 79, 0.8);
-        border-left: 4px solid #ff4081;
-        padding: 5px 15px;
-        font-size: 1rem;
-        color: #ffdf00;
-        border-radius: 0 20px 20px 0;
-        z-index: 20;
-      }
-
-      .cake-wrapper {
-        position: relative;
-        margin-top: 40px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .cake-base {
-        width: 280px;
-        height: 100px;
-        background: linear-gradient(to right, #d4a373, #faedcd, #d4a373);
-        border-radius: 50% 50% 10px 10px;
-        position: relative;
-        border-bottom: 8px solid #a8794f;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-      }
-      .cake-icing {
+      .confetti-piece {
         position: absolute;
         top: -20px;
-        width: 100%;
-        height: 50px;
-        background: #fff5eb;
-        border-radius: 50%;
-        box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.1);
-        border: 2px solid #ffdf00;
-      }
-      .cake-icing::after {
-        content: "";
-        position: absolute;
-        top: 25px;
-        left: -5px;
-        width: 290px;
-        height: 30px;
-        background: radial-gradient(
-            circle at 15px 15px,
-            #fff5eb 15px,
-            transparent 16px
-          )
-          repeat-x;
-        background-size: 30px 30px;
-      }
-
-      .candles-group {
-        position: absolute;
-        top: -60px;
-        display: flex;
-        gap: 20px;
-        z-index: 10;
-      }
-      .candle-item {
-        width: 12px;
-        height: 50px;
-        background: repeating-linear-gradient(
-          45deg,
-          #fff,
-          #fff 5px,
-          #ff0055 5px,
-          #ff0055 10px
-        );
-        position: relative;
-        cursor: pointer;
         border-radius: 2px;
+        animation: fall linear infinite;
       }
-      .flame-ico {
-        width: 16px;
-        height: 26px;
-        background: #ffaa00;
-        border-radius: 50% 50% 20% 20%;
-        position: absolute;
-        top: -28px;
-        left: -2px;
-        box-shadow:
-          0 0 15px #ffaa00,
-          0 0 25px #ff0000;
-        animation: flicker 0.1s infinite alternate;
-        transition: opacity 0.3s;
-      }
-      .candle-item.blown .flame-ico {
-        opacity: 0;
-      }
-      .candle-item.blown::after {
-        content: "";
-        position: absolute;
-        top: -20px;
-        left: 0;
-        width: 10px;
-        height: 20px;
-        background: rgba(255, 255, 255, 0.5);
-        filter: blur(3px);
-        animation: smoke 2s forwards;
-      }
-
-      .progress-track {
-        width: 300px;
-        height: 12px;
-        border: 2px solid #ffdf00;
-        border-radius: 10px;
-        margin-top: 50px;
-        padding: 2px;
-      }
-      .progress-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, #ff0055, #ffea00);
-        border-radius: 5px;
-        transition: width 0.3s ease;
-        box-shadow: 0 0 10px #ffea00;
-      }
-
-      @keyframes flicker {
-        to {
-          transform: scale(1.1) rotate(2deg);
+      @keyframes fall {
+        0% {
+          transform: translateY(-20px) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(110vh) rotate(720deg);
+          opacity: 0.3;
         }
       }
-      @keyframes smoke {
+      .fade-in {
+        animation: fadeIn 0.6s ease both;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
         to {
-          transform: translateY(-40px) scale(2);
+          opacity: 1;
+        }
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      @keyframes float-box {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-2deg);
+        }
+        50% {
+          transform: translateY(-18px) rotate(2deg);
+        }
+      }
+      @keyframes slide-down {
+        from {
+          transform: translateY(-30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          text-shadow:
+            0 0 20px #ffd700aa,
+            0 0 40px #ff8c00aa;
+        }
+        50% {
+          text-shadow:
+            0 0 40px #ffd700,
+            0 0 80px #ff8c00;
+        }
+      }
+      @keyframes name-entrance {
+        from {
+          transform: scale(0.3) rotate(-10deg);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes rainbow-shift {
+        0% {
+          background-position: 0%;
+        }
+        100% {
+          background-position: 300%;
+        }
+      }
+      @keyframes flicker {
+        0% {
+          transform: scaleX(1) scaleY(1);
+        }
+        100% {
+          transform: scaleX(0.85) scaleY(1.1);
+        }
+      }
+      @keyframes smoke-rise {
+        0% {
+          transform: translateY(0);
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-30px);
           opacity: 0;
         }
       }
+      @keyframes balloon-sway {
+        0%,
+        100% {
+          transform: rotate(-5deg);
+        }
+        50% {
+          transform: rotate(5deg);
+        }
+      }
+      @keyframes spin-ring {
+        from {
+          transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg);
+        }
+      }
+      @keyframes open-explode {
+        0% {
+          transform: scale(1);
+        }
+        40% {
+          transform: scale(1.3) rotate(5deg);
+        }
+        100% {
+          transform: scale(3) rotate(10deg);
+          opacity: 0;
+        }
+      }
+      @keyframes photo-pop {
+        0% {
+          transform: scale(0) rotate(-10deg);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.15) rotate(3deg);
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+      @keyframes pop-in {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
 
-      /* =========================================
-       Phase 4: Mystery Wishes
-       ========================================= */
-      .subtitle {
-        position: absolute;
-        top: 14%;
-        color: #fff;
-        font-size: 1.1rem;
+      /* SCREENSHOT TOAST */
+      #ssToast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(140px);
+        background: linear-gradient(135deg, #1a3a6e, #0d2347);
+        border: 2px solid #ffd700;
+        border-radius: 14px;
+        padding: 16px 24px;
+        z-index: 9999;
+        text-align: center;
+        transition:
+          transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 0.5s;
+        opacity: 0;
+        max-width: 300px;
+        width: 88%;
       }
-      .grid-boxes {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-        margin-top: 40px;
-        transition: opacity 0.5s;
+      #ssToast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
       }
-      .mystery-q-box {
-        width: 100px;
-        height: 100px;
-        background: linear-gradient(135deg, #1e88e5, #0d47a1);
-        border: 4px solid #ffdf00;
-        border-radius: 15px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 4rem;
-        color: #ffdf00;
-        font-weight: 900;
-        text-shadow: 0 2px 5px #000;
+      .toast-emoji {
+        font-size: 24px;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .toast-title {
+        color: #ffd700;
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+      }
+      .toast-msg {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .toast-close {
+        margin-top: 10px;
+        background: rgba(255, 215, 0, 0.15);
+        border: 1px solid #ffd700;
+        color: #ffd700;
+        border-radius: 20px;
+        padding: 5px 18px;
+        font-size: 11px;
+        font-weight: 700;
         cursor: pointer;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1px;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      /* PHASE 1 */
+      #phase1 {
+        cursor: pointer;
+      }
+      .p1-title {
+        font-weight: 800;
+        font-size: clamp(22px, 4vw, 36px);
+        color: #ffd700;
+        letter-spacing: 4px;
+        margin-bottom: 36px;
+        text-align: center;
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+      .gift-box {
+        width: 190px;
+        height: 190px;
+        animation: float-box 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 40px #ff8c00cc);
+      }
+      .orbit-ring {
+        position: absolute;
+        width: 270px;
+        height: 75px;
+        border: 2px solid rgba(255, 140, 0, 0.5);
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotateX(75deg);
+        animation: spin-ring 4s linear infinite;
+      }
+      .tap-hint {
+        font-size: 17px;
+        font-weight: 700;
+        color: #fff;
+        margin-top: 28px;
+        letter-spacing: 2px;
+        animation: blink 1.5s ease-in-out infinite;
+      }
+      .gift-box.opening {
+        animation: open-explode 0.6s forwards;
+      }
+
+      /* PHASE 2 */
+      .p2-subtitle {
+        font-weight: 800;
+        font-size: clamp(16px, 3vw, 24px);
+        color: #ffd700;
+        letter-spacing: 6px;
+        margin-bottom: 16px;
+        text-align: center;
+        animation: slide-down 0.8s ease;
+      }
+      .p2-hb {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        font-size: clamp(28px, 5vw, 50px);
+        color: #fff;
+        letter-spacing: 2px;
+        text-align: center;
+        animation: slide-down 0.8s 0.2s ease both;
+      }
+      .p2-name {
+        font-family: "Cinzel Decorative", cursive;
+        font-weight: 900;
+        font-size: clamp(38px, 7vw, 88px);
+        background: linear-gradient(
+          90deg,
+          #ffd700,
+          #ff8c00,
+          #ff4500,
+          #ff69b4,
+          #9370db,
+          #00bfff,
+          #ffd700
+        );
+        background-size: 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation:
+          name-entrance 1s 0.5s ease both,
+          rainbow-shift 3s linear infinite;
+        display: block;
+        text-align: center;
+        margin-top: 8px;
+        letter-spacing: 6px;
+      }
+      .p2-rainbow {
+        width: 220px;
+        height: 7px;
+        background: linear-gradient(
+          90deg,
+          #ff0000,
+          #ff7f00,
+          #ffff00,
+          #00ff00,
+          #0000ff,
+          #8b00ff
+        );
+        border-radius: 4px;
+        margin-top: 24px;
+      }
+      .her-photo-reveal {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        border: 4px solid #ffd700;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow:
+          0 0 30px #ffd700aa,
+          0 0 60px #ff8c0066;
+        animation: photo-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        background: linear-gradient(135deg, #c8956c, #d4a07a);
+      }
+      .her-photo-reveal img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* PHASE 3 */
+      .p3-title,
+      .p4-title,
+      .p5-title {
+        font-weight: 800;
+        font-size: clamp(18px, 3.5vw, 30px);
+        color: #ffd700;
+        letter-spacing: 4px;
+        margin-bottom: 8px;
+        text-align: center;
+        text-shadow: 0 0 20px #ffd700;
+      }
+      .blow-counter {
+        background: rgba(0, 100, 200, 0.4);
+        border: 2px solid #4499ff;
+        border-radius: 6px;
+        padding: 4px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 26px;
+      }
+      .candles-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 4px;
+        z-index: 10;
+      }
+      .candle-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
         transition: transform 0.2s;
       }
-      .mystery-q-box:hover {
-        transform: scale(1.05) translateY(-5px);
+      .candle-wrap:hover {
+        transform: scale(1.1);
+      }
+      .flame {
+        width: 17px;
+        height: 26px;
+        background: radial-gradient(
+          ellipse at 50% 70%,
+          #ffff00 0%,
+          #ff8c00 50%,
+          #ff4500 80%,
+          transparent 100%
+        );
+        border-radius: 50% 50% 40% 40%;
+        animation: flicker 0.3s ease-in-out infinite alternate;
+        box-shadow:
+          0 0 10px #ff8c00,
+          0 0 18px #ffd700;
+      }
+      .flame.out {
+        background: rgba(150, 150, 150, 0.4);
+        box-shadow: none;
+        width: 3px;
+        border-radius: 0;
+        animation: smoke-rise 2s ease forwards;
+      }
+      .candle-stick {
+        width: 11px;
+        height: 38px;
+        background: linear-gradient(
+          90deg,
+          #ffb6c1 0%,
+          #ff69b4 40%,
+          #ffb6c1 100%
+        );
+        border-radius: 3px;
+        margin-top: 2px;
+      }
+      .progress-bar-wrap {
+        width: 250px;
+        height: 9px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 5px;
+        margin-top: 16px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #9b59b6, #e74c3c, #ffd700);
+        border-radius: 5px;
+        transition: width 0.4s ease;
+      }
+      .click-hint {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 10px;
+        animation: blink 2s infinite;
       }
 
-      .scroll-container {
-        display: none;
+      /* PHASE 4 */
+      .p4-subtitle {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 14px;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+      .one-choice-note {
+        font-size: 11px;
+        font-weight: 700;
+        color: #ffd700;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+        opacity: 0.85;
+      }
+      .mystery-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .mbox {
+        width: 126px;
+        height: 106px;
+        background: linear-gradient(135deg, #1a3a6e, #0d2347);
+        border: 2px solid #c5a028;
+        border-radius: 8px;
+        display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80%;
-        max-width: 400px;
-        z-index: 15;
-      }
-      .scroll-paper {
-        background: #f3e5ab;
-        border: 2px solid #cdaa6a;
-        border-radius: 5px;
-        padding: 30px 20px;
-        color: #4a3b2c;
-        font-family: "Playfair Display", serif;
-        font-size: 1.3rem;
-        text-align: center;
-        font-weight: bold;
+        cursor: pointer;
         position: relative;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        overflow: hidden;
       }
-      /* Scroll ends */
-      .scroll-paper::before,
-      .scroll-paper::after {
+      .mbox::before {
         content: "";
         position: absolute;
-        left: -10px;
-        width: calc(100% + 20px);
-        height: 20px;
-        background: linear-gradient(to right, #d4a373, #e9c46a, #d4a373);
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(197, 160, 40, 0.2),
+          transparent
+        );
+        border-radius: 6px;
       }
-      .scroll-paper::before {
-        top: -10px;
+      .mbox:hover:not(.disabled) {
+        transform: scale(1.06);
+        box-shadow: 0 0 22px #c5a02888;
       }
-      .scroll-paper::after {
-        bottom: -10px;
+      .mbox.chosen {
+        pointer-events: none;
+        border-color: #ffd700;
+        background: linear-gradient(135deg, #2a5a2e, #1a3a1e);
+        box-shadow: 0 0 28px #ffd700aa;
+        animation: pop-in 0.5s ease;
+      }
+      .mbox.disabled {
+        opacity: 0.28;
+        pointer-events: none;
+        filter: grayscale(0.6);
+      }
+      .mbox-inner {
+        font-size: 32px;
+        position: relative;
+        z-index: 2;
+      }
+      .mbox-label {
+        font-size: 9px;
+        font-weight: 800;
+        color: #c5a028;
+        letter-spacing: 1px;
+        margin-top: 4px;
+        position: relative;
+        z-index: 2;
+        text-transform: uppercase;
+      }
+      .mbox-corner {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #c5a028;
+        border-radius: 3px;
+      }
+      .mbox-corner.tl {
+        top: 4px;
+        left: 4px;
+        border-right: none;
+        border-bottom: none;
+      }
+      .mbox-corner.tr {
+        top: 4px;
+        right: 4px;
+        border-left: none;
+        border-bottom: none;
+      }
+      .mbox-corner.bl {
+        bottom: 4px;
+        left: 4px;
+        border-right: none;
+        border-top: none;
+      }
+      .mbox-corner.br {
+        bottom: 4px;
+        right: 4px;
+        border-left: none;
+        border-top: none;
+      }
+      .wish-card {
+        max-width: 300px;
+        background: linear-gradient(135deg, #d4a843, #b8860b);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #2c1810;
+        line-height: 1.6;
+        text-align: center;
+        margin-top: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        display: none;
+        animation: slide-down 0.4s ease;
+        position: relative;
+      }
+      .wish-card::before {
+        content: "";
+        position: absolute;
+        inset: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 9px;
+        pointer-events: none;
+      }
+      .wish-card.visible {
+        display: block;
+      }
+      .wish-emoji-big {
+        font-size: 22px;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .wish-tag {
+        display: inline-block;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        padding: 1px 10px;
+        font-size: 10px;
+        font-weight: 700;
+        color: #5c3a00;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .wish-avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        border: 3px solid #2c1810;
+        overflow: hidden;
+        margin: 8px auto 0;
+        background: linear-gradient(135deg, #c8956c, #d4a07a);
+      }
+      .wish-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .continue-btn {
+        background: linear-gradient(135deg, #1a6b3a, #27ae60);
+        color: #fff;
+        border: none;
+        border-radius: 24px;
+        padding: 9px 26px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 4px 14px rgba(39, 174, 96, 0.4);
+        display: none;
+        transition: transform 0.2s;
+        text-transform: uppercase;
+      }
+      .continue-btn.visible {
+        display: inline-block;
+      }
+      .continue-btn:hover {
+        transform: scale(1.05);
       }
 
-      .scroll-container.show {
-        display: flex;
-        animation: unroll 0.6s ease-out;
-      }
-      @keyframes unroll {
-        0% {
-          transform: translate(-50%, -50%) scaleY(0);
-        }
-        100% {
-          transform: translate(-50%, -50%) scaleY(1);
-        }
-      }
-
-      /* =========================================
-       Phase 5: The Letter
-       ========================================= */
+      /* PHASE 5 */
       .letter-scene {
         display: flex;
-        flex-direction: row;
         align-items: center;
-        gap: 30px;
-        margin-top: -30px;
-        margin-bottom: 50px;
+        gap: 34px;
       }
-      .env-wrapper {
-        width: 160px;
-        height: 110px;
-        background: #f1c40f;
+      .envelope {
+        width: 108px;
+        height: 78px;
+        background: linear-gradient(135deg, #d4a843, #e8c35a, #d4a843);
+        border-radius: 6px;
         position: relative;
-        border-radius: 4px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+        transition: transform 0.3s;
+        box-shadow: 4px 4px 18px rgba(0, 0, 0, 0.5);
+      }
+      .envelope:hover {
+        transform: scale(1.06) rotate(-3deg);
       }
       .env-flap {
         position: absolute;
         top: 0;
         left: 0;
-        width: 0;
-        height: 0;
-        border-left: 80px solid transparent;
-        border-right: 80px solid transparent;
-        border-top: 60px solid #f39c12;
-        z-index: 3;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(135deg, #e8c35a, #c8951e);
+        clip-path: polygon(0 0, 50% 100%, 100% 0);
+        border-radius: 6px 6px 0 0;
+        transition: transform 0.4s;
+        transform-origin: top center;
       }
-      .env-body {
+      .envelope.open .env-flap {
+        transform: scaleY(-1);
+      }
+      .env-lines {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 0;
-        border-left: 80px solid #e67e22;
-        border-right: 80px solid #e67e22;
-        border-bottom: 50px solid #d35400;
-        z-index: 2;
+        bottom: 9px;
+        left: 12px;
+        right: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
       }
-
-      .arrow-icon {
-        font-size: 2rem;
-        color: #ffdf00;
-        animation: bounceX 1s infinite alternate;
+      .env-line {
+        height: 3px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 2px;
       }
-      @keyframes bounceX {
-        to {
-          transform: translateX(15px);
-        }
+      .arrow-hint {
+        font-size: 26px;
+        color: #ffd700;
+        animation: blink 1.5s infinite;
       }
-
-      .open-card-preview {
-        width: 160px;
-        height: 200px;
-        background: #fffdf5;
-        border: 2px solid #d4af37;
-        border-radius: 4px;
+      .letter-card {
+        width: 172px;
+        height: 210px;
+        background: linear-gradient(145deg, #fff9e8, #fff0cc);
+        border-radius: 8px;
+        border: 1px solid #d4a843;
         padding: 10px;
+        box-shadow: 4px 6px 22px rgba(0, 0, 0, 0.5);
         display: flex;
         flex-direction: column;
         align-items: center;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         position: relative;
       }
-      .open-card-preview::before {
-        content: "";
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        right: 5px;
-        bottom: 5px;
-        border: 1px dashed #d4af37;
-        pointer-events: none;
-      }
-      .preview-photo {
-        width: 60px;
-        height: 60px;
-        background: #ddd;
-        border: 2px solid #d4af37;
-        border-radius: 4px;
-        margin-top: 10px;
-        object-fit: cover;
-      }
-      .preview-seal {
-        position: absolute;
-        bottom: -15px;
-        right: 20px;
-        width: 30px;
-        height: 30px;
-        background: #c0392b;
+      .lc-photo {
+        width: 56px;
+        height: 56px;
         border-radius: 50%;
-        border: 2px solid #ffdf00;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        border: 2px solid #d4a843;
+        overflow: hidden;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #c8956c, #d4a07a);
+      }
+      .lc-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .letter-lines {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding-top: 4px;
+      }
+      .letter-line {
+        height: 2px;
+        background: rgba(100, 60, 0, 0.2);
+        border-radius: 1px;
+      }
+      .letter-line.short {
+        width: 60%;
+      }
+      .finger-hint {
+        font-size: 24px;
+        position: absolute;
+        bottom: -12px;
+        right: 7px;
+        animation: tap-hint 1.5s ease-in-out infinite;
+      }
+      @keyframes tap-hint {
+        0%,
+        100% {
+          transform: translateY(0) rotate(20deg);
+        }
+        50% {
+          transform: translateY(-8px) rotate(10deg);
+        }
+      }
+      .open-btn,
+      .replay-btn {
+        border: none;
+        border-radius: 24px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: transform 0.2s;
+      }
+      .open-btn {
+        background: linear-gradient(135deg, #c0392b, #e74c3c);
+        color: #fff;
+        padding: 8px 26px;
+        margin-top: 22px;
+        box-shadow: 0 4px 14px rgba(231, 76, 60, 0.5);
+      }
+      .replay-btn {
+        background: linear-gradient(135deg, #c0392b, #e74c3c);
+        color: #fff;
+        padding: 10px 30px;
+        margin-top: 16px;
+        box-shadow: 0 4px 14px rgba(231, 76, 60, 0.5);
+        position: relative;
+        z-index: 20;
+      }
+      .open-btn:hover,
+      .replay-btn:hover {
+        transform: scale(1.05);
       }
 
-      /* =========================================
-       Phase 6: Finale
-       ========================================= */
-      .finale-card-container {
-        width: 85%;
-        max-width: 600px;
-        background: #fffdf5;
-        border: 4px solid #d4af37;
-        border-radius: 8px;
-        padding: 25px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+      /* PHASE 6 */
+      .finale-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #1a0a3e, #0d1b4b, #2d0a1a);
+      }
+      .finale-board {
+        background: linear-gradient(145deg, #fff9e0, #fff3cc, #f5e6a8);
+        border: 4px solid #c5a028;
+        border-radius: 14px;
+        padding: 22px 30px;
         position: relative;
         z-index: 10;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-        margin-bottom: 40px;
+        text-align: center;
+        box-shadow: 0 0 40px rgba(197, 160, 40, 0.5);
+        max-width: 360px;
+        width: 90%;
       }
-      .finale-card-container::before {
+      .finale-board::before {
         content: "";
         position: absolute;
-        top: 8px;
-        left: 8px;
-        right: 8px;
-        bottom: 8px;
-        border: 1px dashed #d4af37;
+        inset: 6px;
+        border: 1px solid rgba(197, 160, 40, 0.4);
+        border-radius: 8px;
         pointer-events: none;
       }
-
-      .finale-text {
-        flex: 1;
-        text-align: left;
-        padding-right: 20px;
-        font-family: "Playfair Display", serif;
+      .finale-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 4px solid #c5a028;
+        overflow: hidden;
+        margin: 0 auto 14px;
+        box-shadow: 0 0 24px #ffd700aa;
+        position: relative;
+        z-index: 1;
+        animation: photo-pop 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        background: linear-gradient(135deg, #c8956c, #d4a07a);
       }
-      .finale-text h1 {
-        font-size: 2.8rem;
-        color: #2c3e50;
-        line-height: 1.1;
-        margin: 0;
-      }
-      .finale-text h1 span {
-        color: #880e4f;
-      }
-
-      .finale-photo-frame {
-        width: 140px;
-        height: 160px;
-        padding: 8px;
-        background: #d4af37;
-        border-radius: 5px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-      }
-      .finale-photo-frame img {
+      .finale-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border: 2px solid #fff;
+        display: block;
       }
-
-      /* CSS Balloons */
-      .balloons-layer {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        z-index: 5;
-        pointer-events: none;
-        display: flex;
-        justify-content: space-between;
-        padding: 0 5%;
+      .finale-title {
+        font-family: "Cinzel Decorative", cursive;
+        font-weight: 700;
+        font-size: clamp(20px, 4vw, 34px);
+        color: #2c1810;
+        line-height: 1.25;
+        margin-bottom: 8px;
       }
-      .balloon-bunch {
-        position: relative;
-        top: 30%;
-        width: 100px;
+      .finale-quote {
+        font-family: "Playfair Display", serif;
+        font-size: 12px;
+        color: #5c3a00;
+        font-style: italic;
+        line-height: 1.7;
+        border-top: 1px solid rgba(197, 160, 40, 0.4);
+        padding-top: 10px;
+        margin-top: 10px;
+      }
+      .finale-quote-attr {
+        font-size: 10px;
+        font-weight: 700;
+        color: #7a4f00;
+        margin-top: 4px;
+        letter-spacing: 1px;
       }
       .balloon {
-        position: absolute;
-        width: 50px;
-        height: 60px;
-        border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-        box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.2);
-        animation: floatBalloon 4s ease-in-out infinite alternate;
-      }
-      .balloon::before {
-        content: "";
-        position: absolute;
-        bottom: -8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 0;
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-bottom: 10px solid inherit;
+        width: 32px;
+        height: 40px;
+        border-radius: 50% 50% 45% 45%;
+        position: relative;
+        animation: balloon-sway 3s ease-in-out infinite;
       }
       .balloon::after {
         content: "";
         position: absolute;
-        bottom: -50px;
+        bottom: -16px;
         left: 50%;
+        transform: translateX(-50%);
         width: 1px;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.4);
+        height: 16px;
+        background: rgba(255, 255, 255, 0.6);
       }
-
-      .b-pink {
-        background: radial-gradient(circle at 30% 30%, #ff99cc, #d81b60);
-        border-bottom-color: #d81b60;
-        left: 0;
-        top: 20px;
-        animation-delay: 0s;
-      }
-      .b-purple {
-        background: radial-gradient(circle at 30% 30%, #d499ff, #6a1b9a);
-        border-bottom-color: #6a1b9a;
-        left: 40px;
-        top: 0;
-        z-index: 2;
-        animation-delay: 1s;
-      }
-      .b-gold {
-        background: radial-gradient(circle at 30% 30%, #ffee99, #f39c12);
-        border-bottom-color: #f39c12;
-        left: 20px;
-        top: 40px;
-        animation-delay: 2s;
-      }
-
-      @keyframes floatBalloon {
-        0% {
-          transform: translateY(0) rotate(-2deg);
-        }
-        100% {
-          transform: translateY(-20px) rotate(2deg);
-        }
+      .fireworks-canvas {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
       }
     </style>
   </head>
   <body>
-    <div class="bg-space"></div>
-    <div class="stars"></div>
-
-    <div class="phase active" id="phase1">
-      <div class="header-title">Mystery Box</div>
-      <div class="box-wrapper" onclick="openMysteryBox()">
-        <div class="glowing-ring"></div>
-        <div class="box-base"></div>
-        <div class="box-lid"></div>
+    <!-- SCREENSHOT TOAST -->
+    <div id="ssToast">
+      <span class="toast-emoji">📸</span>
+      <div class="toast-title">TAKE A SCREENSHOT!</div>
+      <div class="toast-msg">
+        You revealed your mystery wish!<br />Please
+        <strong>screenshot this</strong> and<br /><strong>send it to me</strong>
+        💌
       </div>
-      <div class="tap-text">Tap to Open</div>
+      <button class="toast-close" onclick="closeToast()">OK, will do! ✓</button>
     </div>
 
-    <div class="phase" id="phase2">
-      <div class="header-title">Happy Birthday Reveal</div>
-      <div class="box-wrapper opened">
-        <div class="glowing-ring"></div>
-        <div class="box-base"></div>
-        <div class="box-lid"></div>
+    <!-- PHASE 1 -->
+    <div class="stage fade-in" id="phase1" onclick="openBox()">
+      <div class="stars" id="stars1"></div>
+      <div class="p1-title">MYSTERY BOX</div>
+      <div
+        style="
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div class="orbit-ring"></div>
+        <div class="gift-box" id="giftBox">
+          <svg
+            viewBox="0 0 200 200"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FFD700" stop-opacity=".4" />
+                <stop offset="100%" stop-color="#FF4500" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient id="boxGrad" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#FF8C00" />
+                <stop offset="60%" stop-color="#E65C00" />
+                <stop offset="100%" stop-color="#B34500" />
+              </radialGradient>
+              <radialGradient id="lidGrad" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#FF9F1A" />
+                <stop offset="100%" stop-color="#CC5500" />
+              </radialGradient>
+            </defs>
+            <ellipse cx="100" cy="170" rx="70" ry="16" fill="url(#g1)" />
+            <rect
+              x="30"
+              y="100"
+              width="140"
+              height="80"
+              rx="4"
+              fill="url(#boxGrad)"
+            />
+            <rect x="30" y="100" width="20" height="80" fill="rgba(0,0,0,.2)" />
+            <rect x="92" y="100" width="16" height="80" fill="#CC0000" />
+            <rect
+              x="22"
+              y="82"
+              width="156"
+              height="24"
+              rx="4"
+              fill="url(#lidGrad)"
+            />
+            <rect
+              x="22"
+              y="88"
+              width="156"
+              height="12"
+              fill="#CC0000"
+              opacity=".9"
+            />
+            <ellipse cx="100" cy="82" rx="14" ry="10" fill="#EE0000" />
+            <ellipse
+              cx="78"
+              cy="70"
+              rx="18"
+              ry="10"
+              fill="#DD0000"
+              transform="rotate(-20,78,70)"
+            />
+            <ellipse
+              cx="78"
+              cy="70"
+              rx="14"
+              ry="7"
+              fill="#FF3333"
+              transform="rotate(-20,78,70)"
+              opacity=".6"
+            />
+            <ellipse
+              cx="122"
+              cy="70"
+              rx="18"
+              ry="10"
+              fill="#DD0000"
+              transform="rotate(20,122,70)"
+            />
+            <ellipse
+              cx="122"
+              cy="70"
+              rx="14"
+              ry="7"
+              fill="#FF3333"
+              transform="rotate(20,122,70)"
+              opacity=".6"
+            />
+            <path
+              d="M90 82 Q80 90 72 98"
+              stroke="#CC0000"
+              stroke-width="3"
+              fill="none"
+            />
+            <path
+              d="M110 82 Q120 90 128 98"
+              stroke="#CC0000"
+              stroke-width="3"
+              fill="none"
+            />
+            <g fill="#FFD700">
+              <polygon
+                points="20,50 22,56 28,56 23,60 25,66 20,62 15,66 17,60 12,56 18,56"
+                opacity=".9"
+              />
+              <polygon
+                points="168,40 170,46 176,46 171,50 173,56 168,52 163,56 165,50 160,46 166,46"
+                opacity=".8"
+              />
+            </g>
+            <rect
+              x="36"
+              y="108"
+              width="24"
+              height="6"
+              rx="3"
+              fill="rgba(255,255,255,.25)"
+            />
+          </svg>
+        </div>
       </div>
-      <div class="reveal-text-container" id="revealText">
-        <div class="reveal-hb">Happy Birthday</div>
-        <div class="reveal-name">ANTARA</div>
-      </div>
+      <div class="tap-hint">✨ Tap to Open ✨</div>
     </div>
 
-    <div class="phase" id="phase3">
-      <div class="header-title">Blow the Candles</div>
+    <!-- PHASE 2 -->
+    <div class="stage" id="phase2">
+      <div class="stars" id="stars2"></div>
+      <div class="confetti-container" id="confetti2"></div>
+      <div class="her-photo-reveal">
+        <!-- ★ PHOTO SLOT 1 — replace src -->
+        <img src="/src/antara.jpg" alt="Antara" id="photo_p2" />
+      </div>
+      <div class="p2-subtitle">HAPPY BIRTHDAY REVEAL</div>
+      <div class="p2-hb">Happy Birthday</div>
+      <span class="p2-name">ANTARA</span>
+      <div class="p2-rainbow"></div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="stage" id="phase3">
+      <div class="stars" id="stars3"></div>
+      <div class="p3-title">BLOW THE CANDLES</div>
       <div class="blow-counter" id="blowCounter">BLOW COUNTER: 0/5</div>
-
-      <div class="cake-wrapper">
-        <div class="candles-group" id="candleGroup">
-          <div class="candle-item" onclick="blowCandle(this)">
-            <div class="flame-ico"></div>
-          </div>
-          <div
-            class="candle-item"
-            onclick="blowCandle(this)"
-            style="margin-top: -10px"
-          >
-            <div class="flame-ico"></div>
-          </div>
-          <div
-            class="candle-item"
-            onclick="blowCandle(this)"
-            style="margin-top: -15px"
-          >
-            <div class="flame-ico"></div>
-          </div>
-          <div
-            class="candle-item"
-            onclick="blowCandle(this)"
-            style="margin-top: -10px"
-          >
-            <div class="flame-ico"></div>
-          </div>
-          <div class="candle-item" onclick="blowCandle(this)">
-            <div class="flame-ico"></div>
-          </div>
-        </div>
-        <div class="cake-icing"></div>
-        <div class="cake-base"></div>
-      </div>
-
-      <div class="progress-track">
-        <div class="progress-fill" id="blowProgress"></div>
-      </div>
-    </div>
-
-    <div class="phase" id="phase4">
-      <div class="header-title">Mystery Wishes</div>
-      <div class="subtitle" id="p4Subtitle">Pick a Mystery Box!</div>
-
-      <div class="grid-boxes" id="wishBoxes">
-        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
-        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
-        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
-        <div class="mystery-q-box" onclick="selectWishBox()">?</div>
-      </div>
-
-      <div class="scroll-container" id="wishScroll">
-        <div class="scroll-paper">
-          Best wishes on your special day! Let's visit the temple together soon
-          to seek blessings. 🙏
-        </div>
-        <button
-          class="btn-action"
-          style="margin-top: 30px"
-          onclick="goToPhase(5)"
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <div class="candles-row" id="candlesRow"></div>
+        <svg
+          viewBox="0 0 260 140"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="width: 255px"
         >
-          Next
-        </button>
-      </div>
-    </div>
-
-    <div class="phase" id="phase5">
-      <div class="header-title">The Letter</div>
-
-      <div class="letter-scene">
-        <div class="env-wrapper">
-          <div class="env-flap"></div>
-          <div class="env-body"></div>
-        </div>
-
-        <div class="arrow-icon">➔</div>
-
-        <div class="open-card-preview">
-          <img
-            src="/api/placeholder/60/60"
-            alt="Antara"
-            class="preview-photo"
+          <defs>
+            <radialGradient id="sh" cx="50%" cy="100%" r="50%">
+              <stop offset="0%" stop-color="rgba(0,0,0,.4)" />
+              <stop offset="100%" stop-color="transparent" />
+            </radialGradient>
+          </defs>
+          <ellipse cx="130" cy="128" rx="100" ry="10" fill="url(#sh)" />
+          <rect x="10" y="70" width="240" height="60" rx="8" fill="#D4A843" />
+          <path
+            d="M10,78 Q30,90 50,80 Q70,90 90,78 Q110,90 130,80 Q150,90 170,78 Q190,90 210,80 Q230,90 250,78 L250,82 Q230,94 210,84 Q190,94 170,82 Q150,94 130,84 Q110,94 90,82 Q70,94 50,84 Q30,94 10,82Z"
+            fill="#FFF8DC"
+            opacity=".9"
           />
-          <div
-            style="
-              margin-top: 10px;
-              width: 80%;
-              height: 4px;
-              background: #e0e0e0;
-            "
-          ></div>
-          <div
-            style="
-              margin-top: 5px;
-              width: 60%;
-              height: 4px;
-              background: #e0e0e0;
-            "
-          ></div>
-          <div class="preview-seal"></div>
-        </div>
+          <g fill="#C0392B">
+            <circle cx="40" cy="115" r="5" />
+            <circle cx="70" cy="120" r="4" />
+            <circle cx="100" cy="115" r="5" />
+            <circle cx="130" cy="120" r="4" />
+            <circle cx="160" cy="115" r="5" />
+            <circle cx="190" cy="120" r="4" />
+            <circle cx="220" cy="115" r="5" />
+          </g>
+          <rect x="30" y="38" width="200" height="36" rx="6" fill="#E8C35A" />
+          <path
+            d="M30,44 Q50,54 70,46 Q90,54 110,46 Q130,54 150,46 Q170,54 190,46 Q210,54 230,44 L230,48 Q210,58 190,50 Q170,58 150,50 Q130,58 110,50 Q90,58 70,50 Q50,58 30,48Z"
+            fill="#FFF8DC"
+            opacity=".9"
+          />
+          <g fill="#9B59B6">
+            <circle cx="60" cy="62" r="4" />
+            <circle cx="90" cy="66" r="3" />
+            <circle cx="120" cy="62" r="4" />
+            <circle cx="150" cy="66" r="3" />
+            <circle cx="180" cy="62" r="4" />
+          </g>
+          <rect x="55" y="14" width="150" height="28" rx="5" fill="#F0D060" />
+        </svg>
       </div>
-
-      <button class="btn-action" onclick="goToPhase(6)">Open</button>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+      <div class="click-hint" id="clickHint">
+        👆 Click the candles to blow them!
+      </div>
     </div>
 
-    <div class="phase" id="phase6">
-      <div class="header-title">Finale</div>
-
-      <div class="balloons-layer">
-        <div class="balloon-bunch">
-          <div class="balloon b-pink"></div>
-          <div class="balloon b-purple"></div>
-          <div class="balloon b-gold"></div>
+    <!-- PHASE 4 -->
+    <div class="stage" id="phase4">
+      <div class="stars" id="stars4"></div>
+      <div class="p4-title">MYSTERY WISHES</div>
+      <div class="p4-subtitle">
+        ✨ Pick ONE box — this is your only chance! ✨
+      </div>
+      <div class="one-choice-note" id="oneChoiceNote">
+        🔒 Choose wisely — only one pick allowed!
+      </div>
+      <div class="mystery-grid">
+        <div class="mbox" id="mbox0" onclick="revealWish(0)">
+          <div class="mbox-corner tl"></div>
+          <div class="mbox-corner tr"></div>
+          <div class="mbox-corner bl"></div>
+          <div class="mbox-corner br"></div>
+          <div class="mbox-inner" id="micon0">?</div>
+          <div class="mbox-label">Box A</div>
         </div>
-        <div class="balloon-bunch">
-          <div class="balloon b-pink" style="left: 20px"></div>
-          <div class="balloon b-purple" style="left: -20px; top: 10px"></div>
-          <div class="balloon b-gold" style="left: 0px; top: 40px"></div>
+        <div class="mbox" id="mbox1" onclick="revealWish(1)">
+          <div class="mbox-corner tl"></div>
+          <div class="mbox-corner tr"></div>
+          <div class="mbox-corner bl"></div>
+          <div class="mbox-corner br"></div>
+          <div class="mbox-inner" id="micon1">?</div>
+          <div class="mbox-label">Box B</div>
+        </div>
+        <div class="mbox" id="mbox2" onclick="revealWish(2)">
+          <div class="mbox-corner tl"></div>
+          <div class="mbox-corner tr"></div>
+          <div class="mbox-corner bl"></div>
+          <div class="mbox-corner br"></div>
+          <div class="mbox-inner" id="micon2">?</div>
+          <div class="mbox-label">Box C</div>
+        </div>
+        <div class="mbox" id="mbox3" onclick="revealWish(3)">
+          <div class="mbox-corner tl"></div>
+          <div class="mbox-corner tr"></div>
+          <div class="mbox-corner bl"></div>
+          <div class="mbox-corner br"></div>
+          <div class="mbox-inner" id="micon3">?</div>
+          <div class="mbox-label">Box D</div>
         </div>
       </div>
-
-      <div class="finale-card-container">
-        <div class="finale-text">
-          <h1>Happy<br />Birthday<br /><span>Antara!</span></h1>
-        </div>
-        <div class="finale-photo-frame">
-          <img src="/api/placeholder/140/160" alt="Antara" />
+      <div class="wish-card" id="wishCard">
+        <span class="wish-emoji-big" id="wishEmoji"></span>
+        <div class="wish-tag" id="wishTag"></div>
+        <div id="wishText"></div>
+        <div
+          id="wishSub"
+          style="
+            font-size: 11px;
+            font-style: italic;
+            color: #5c3a00;
+            margin-top: 4px;
+          "
+        ></div>
+        <div class="wish-avatar">
+          <!-- ★ PHOTO SLOT 2 — replace src -->
+          <img src="/src/antara.jpg" alt="Antara" id="photo_wish" />
         </div>
       </div>
+      <button class="continue-btn" id="continueBtn" onclick="showPhase(5)">
+        CONTINUE →
+      </button>
+    </div>
 
-      <button class="btn-action" onclick="resetApp()">Replay</button>
+    <!-- PHASE 5 -->
+    <div class="stage" id="phase5">
+      <div class="stars" id="stars5"></div>
+      <div class="p5-title">THE LETTER</div>
+      <div class="letter-scene">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+          <div class="env-flap"></div>
+          <div class="env-lines">
+            <div class="env-line"></div>
+            <div class="env-line" style="width: 70%"></div>
+            <div class="env-line" style="width: 85%"></div>
+          </div>
+        </div>
+        <div class="arrow-hint">→</div>
+        <div class="letter-card">
+          <div class="lc-photo">
+            <!-- ★ PHOTO SLOT 3 — replace src -->
+            <img src="/src/antara.jpg" alt="Antara" id="photo_letter" />
+          </div>
+          <div class="letter-lines">
+            <div class="letter-line"></div>
+            <div class="letter-line"></div>
+            <div class="letter-line short"></div>
+            <div class="letter-line"></div>
+            <div class="letter-line short"></div>
+          </div>
+          <div class="finger-hint">👆</div>
+        </div>
+      </div>
+      <button class="open-btn" onclick="openAndGo()">OPEN</button>
+    </div>
+
+    <!-- PHASE 6 -->
+    <div class="stage" id="phase6">
+      <div class="finale-bg"></div>
+      <canvas class="fireworks-canvas" id="fireworksCanvas"></canvas>
+      <div class="confetti-container" id="confetti6"></div>
+      <div
+        style="
+          position: relative;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        "
+      >
+        <div
+          style="
+            position: absolute;
+            left: -95px;
+            top: -50px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+          "
+        >
+          <div class="balloon" style="background: #ff69b4"></div>
+          <div
+            class="balloon"
+            style="background: #9b59b6; animation-delay: 0.5s"
+          ></div>
+          <div
+            class="balloon"
+            style="background: #d4a843; animation-delay: 1s"
+          ></div>
+        </div>
+        <div
+          style="
+            position: absolute;
+            right: -95px;
+            top: -50px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+          "
+        >
+          <div
+            class="balloon"
+            style="background: #ff8c00; animation-delay: 0.3s"
+          ></div>
+          <div
+            class="balloon"
+            style="background: #ff69b4; animation-delay: 0.8s"
+          ></div>
+          <div
+            class="balloon"
+            style="background: #9b59b6; animation-delay: 1.3s"
+          ></div>
+        </div>
+        <div class="finale-board">
+          <div class="finale-avatar">
+            <!-- ★ PHOTO SLOT 4 — replace src -->
+            <img src="/src/antara.jpg" alt="Antara" id="photo_finale" />
+          </div>
+          <div class="finale-title">Happy<br />Birthday<br />Antara! 🎂</div>
+          <div class="finale-quote" id="finaleQuote"></div>
+          <div class="finale-quote-attr" id="finaleQuoteAttr"></div>
+        </div>
+        <button class="replay-btn" onclick="replay()">↺ REPLAY</button>
+      </div>
     </div>
 
     <script>
-      // --- Phase Navigation ---
-      function goToPhase(num) {
-        document
-          .querySelectorAll(".phase")
-          .forEach((p) => p.classList.remove("active"));
-        document.getElementById(`phase${num}`).classList.add("active");
+      var currentPhase = 1;
+      var fwAnim = null;
+      var shuffledWishes = [];
+      var chosen = false;
 
-        // Trigger specific animations on enter
-        if (num === 2) triggerConfetti();
-        if (num === 6) startFinaleEffects();
+      var allWishes = [
+        {
+          emoji: "🎁🍰",
+          tag: "WISH + TREAT",
+          text: "Wishing you all the joy your heart can hold, Antara! You deserve every happiness today. 🌟",
+          sub: "And of course — treat's on me today! Your favourite dessert is waiting. 🍰",
+        },
+        {
+          emoji: "😄✨",
+          tag: "WISH + FUNNY QUOTE",
+          text: "Happy Birthday, Antara! May your WiFi always be strong and Mondays forever far away! 🎉",
+          sub: '"Age is just a number… and yours is a really adorable one! 😂" — Your Secret Admirer',
+        },
+        {
+          emoji: "🙏🛕",
+          tag: "BEST WISHES + TEMPLE VISIT",
+          text: "May every blessing find its way to you, Antara! Wishing you a beautiful year ahead. 🌸",
+          sub: "Let's visit the temple together soon and seek blessings for the wonderful year ahead! 🪔",
+        },
+        {
+          emoji: "🥳🍜",
+          tag: "WISH + YOU GET TREATED",
+          text: "Today is YOUR day, Antara! You deserve all the love, laughter, and magic in the world. 💫",
+          sub: "Dinner is on me — you pick the place, I'll bring the smiles! Let's celebrate YOU properly! 👑",
+        },
+      ];
+
+      var finaleQuotes = [
+        {
+          q: '"May your life be as warm as your smile, as bright as your heart, and as beautiful as you are inside and out."',
+          a: "— With love, on your special day",
+        },
+        {
+          q: '"Another year older, another year wiser, another year more wonderful. Keep shining, Antara!"',
+          a: "— A birthday blessing for you",
+        },
+        {
+          q: '"May every dream you hold close find its way to you this year and always."',
+          a: "— Happy Birthday, always",
+        },
+        {
+          q: '"Count your life by smiles, not tears. Count your age by friends, not years."',
+          a: "— With endless warmth",
+        },
+      ];
+
+      function createStars(id, n) {
+        var c = document.getElementById(id);
+        if (!c) return;
+        for (var i = 0; i < n; i++) {
+          var s = document.createElement("div");
+          s.className = "star";
+          s.style.left = Math.random() * 100 + "%";
+          s.style.top = Math.random() * 100 + "%";
+          s.style.width = s.style.height = Math.random() * 2 + 1 + "px";
+          s.style.animationDelay = Math.random() * 3 + "s";
+          s.style.animationDuration = Math.random() * 2 + 1.5 + "s";
+          c.appendChild(s);
+        }
+      }
+      ["stars1", "stars2", "stars3", "stars4", "stars5"].forEach(function (id) {
+        createStars(id, 60);
+      });
+
+      var ccols = [
+        "#FF0000",
+        "#FF7F00",
+        "#FFFF00",
+        "#00FF00",
+        "#0000FF",
+        "#8B00FF",
+        "#FF69B4",
+        "#FFD700",
+      ];
+      function createConfetti(id, n) {
+        var c = document.getElementById(id);
+        if (!c) return;
+        c.innerHTML = "";
+        for (var i = 0; i < n; i++) {
+          var p = document.createElement("div");
+          p.className = "confetti-piece";
+          p.style.left = Math.random() * 100 + "%";
+          p.style.background = ccols[Math.floor(Math.random() * ccols.length)];
+          p.style.animationDuration = Math.random() * 2 + 2 + "s";
+          p.style.animationDelay = Math.random() * 3 + "s";
+          p.style.width = Math.random() * 8 + 6 + "px";
+          p.style.height = Math.random() * 10 + 8 + "px";
+          c.appendChild(p);
+        }
       }
 
-      // --- Phase 1 & 2 Logic ---
-      function openMysteryBox() {
-        // Find the box in phase 1, trigger open animation
-        const box = document.querySelector("#phase1 .box-wrapper");
-        box.classList.add("opened");
-        document.querySelector("#phase1 .tap-text").style.opacity = 0;
+      function showPhase(n) {
+        document.querySelectorAll(".stage").forEach(function (s) {
+          s.classList.remove("active");
+        });
+        document.getElementById("phase" + n).classList.add("active", "fade-in");
+        currentPhase = n;
+        if (n === 2) createConfetti("confetti2", 60);
+        if (n === 6) {
+          createConfetti("confetti6", 80);
+          setFinaleQuote();
+          startFireworks();
+        }
+      }
 
-        // Small puff of confetti on click
-        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      function openBox() {
+        document.getElementById("giftBox").classList.add("opening");
+        setTimeout(function () {
+          showPhase(2);
+        }, 600);
+      }
 
-        // Transition to Phase 2 automatically
-        setTimeout(() => {
-          goToPhase(2);
-          document.getElementById("revealText").classList.add("show");
+      document.getElementById("phase2").addEventListener("click", function () {
+        if (currentPhase === 2) showPhase(3);
+      });
+      setTimeout(function () {
+        if (currentPhase === 2) showPhase(3);
+      }, 4500);
 
-          // Wait, then move to Phase 3 (Candles)
-          setTimeout(() => {
-            goToPhase(3);
-          }, 4000);
+      var blownCount = 0;
+      function buildCandles() {
+        var row = document.getElementById("candlesRow");
+        row.innerHTML = "";
+        blownCount = 0;
+        document.getElementById("blowCounter").textContent =
+          "BLOW COUNTER: 0/5";
+        document.getElementById("progressBar").style.width = "0%";
+        document.getElementById("clickHint").textContent =
+          "👆 Click the candles to blow them!";
+        for (var i = 0; i < 5; i++) {
+          (function (idx) {
+            var w = document.createElement("div");
+            w.className = "candle-wrap";
+            w.innerHTML =
+              '<div class="flame" id="flame' +
+              idx +
+              '"></div><div class="candle-stick"></div>';
+            w.onclick = function () {
+              blowCandle(idx);
+            };
+            row.appendChild(w);
+          })(i);
+        }
+      }
+      function blowCandle(i) {
+        var fl = document.getElementById("flame" + i);
+        if (!fl || fl.classList.contains("out")) return;
+        fl.classList.add("out");
+        blownCount++;
+        document.getElementById("blowCounter").textContent =
+          "BLOW COUNTER: " + blownCount + "/5";
+        document.getElementById("progressBar").style.width =
+          (blownCount / 5) * 100 + "%";
+        if (blownCount === 5) {
+          document.getElementById("clickHint").textContent =
+            "🎉 All candles blown!";
+          setTimeout(function () {
+            showPhase(4);
+          }, 1200);
+        }
+      }
+
+      function shuffleWishes() {
+        var a = allWishes.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i];
+          a[i] = a[j];
+          a[j] = t;
+        }
+        shuffledWishes = a;
+      }
+
+      function initWishes() {
+        chosen = false;
+        shuffleWishes();
+        for (var i = 0; i < 4; i++) {
+          var b = document.getElementById("mbox" + i);
+          b.className = "mbox";
+          document.getElementById("micon" + i).textContent = "?";
+        }
+        document.getElementById("oneChoiceNote").textContent =
+          "🔒 Choose wisely — only one pick allowed!";
+        document.getElementById("wishCard").classList.remove("visible");
+        document.getElementById("continueBtn").classList.remove("visible");
+      }
+
+      function revealWish(boxIdx) {
+        if (chosen) return;
+        chosen = true;
+
+        var wish = shuffledWishes[boxIdx];
+
+        for (var i = 0; i < 4; i++) {
+          var b = document.getElementById("mbox" + i);
+          if (i === boxIdx) {
+            b.classList.add("chosen");
+            document.getElementById("micon" + i).textContent = wish.emoji;
+          } else {
+            b.classList.add("disabled");
+            document.getElementById("micon" + i).textContent = "🔒";
+          }
+        }
+
+        document.getElementById("oneChoiceNote").textContent =
+          "✅ You chose Box " + "ABCD"[boxIdx] + "!";
+        document.getElementById("wishEmoji").textContent = wish.emoji;
+        document.getElementById("wishTag").textContent = wish.tag;
+        document.getElementById("wishText").textContent = wish.text;
+        document.getElementById("wishSub").textContent = wish.sub;
+        document.getElementById("wishCard").classList.add("visible");
+
+        setTimeout(showToast, 600);
+        setTimeout(function () {
+          document.getElementById("continueBtn").classList.add("visible");
         }, 800);
       }
 
-      // --- Phase 3 Logic ---
-      let blows = 0;
-      function blowCandle(element) {
-        if (element.classList.contains("blown")) return;
+      var toastTimer = null;
+      function showToast() {
+        var t = document.getElementById("ssToast");
+        t.classList.add("show");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(closeToast, 12000);
+      }
+      function closeToast() {
+        document.getElementById("ssToast").classList.remove("show");
+      }
 
-        element.classList.add("blown");
-        blows++;
+      function openEnvelope() {
+        document.getElementById("envelope").classList.add("open");
+      }
+      function openAndGo() {
+        openEnvelope();
+        setTimeout(function () {
+          showPhase(6);
+        }, 700);
+      }
 
-        document.getElementById("blowCounter").innerText =
-          `BLOW COUNTER: ${blows}/5`;
-        document.getElementById("blowProgress").style.width = `${blows * 20}%`;
+      function setFinaleQuote() {
+        var q = finaleQuotes[Math.floor(Math.random() * finaleQuotes.length)];
+        document.getElementById("finaleQuote").textContent = q.q;
+        document.getElementById("finaleQuoteAttr").textContent = q.a;
+      }
 
-        if (blows === 5) {
-          setTimeout(() => {
-            goToPhase(4);
-          }, 1500);
+      function startFireworks() {
+        var canvas = document.getElementById("fireworksCanvas");
+        canvas.width = canvas.offsetWidth || window.innerWidth;
+        canvas.height = canvas.offsetHeight || window.innerHeight;
+        var ctx = canvas.getContext("2d"),
+          parts = [];
+        var cols = [
+          "#FFD700",
+          "#FF4500",
+          "#FF69B4",
+          "#9B59B6",
+          "#00BFFF",
+          "#FF8C00",
+          "#FFF",
+        ];
+        function launch() {
+          var x = Math.random() * canvas.width,
+            y = Math.random() * canvas.height * 0.6,
+            c = cols[Math.floor(Math.random() * cols.length)];
+          for (var i = 0; i < 50; i++) {
+            var a = ((Math.PI * 2) / 50) * i,
+              s = Math.random() * 4 + 2;
+            parts.push({
+              x: x,
+              y: y,
+              vx: Math.cos(a) * s,
+              vy: Math.sin(a) * s,
+              life: 1,
+              color: c,
+              size: Math.random() * 3 + 1,
+            });
+          }
         }
-      }
-
-      // --- Phase 4 Logic ---
-      function selectWishBox() {
-        document.getElementById("wishBoxes").style.display = "none";
-        document.getElementById("p4Subtitle").style.display = "none";
-        document.getElementById("wishScroll").classList.add("show");
-        confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 } });
-      }
-
-      // --- Phase 6 Logic (Finale Effects) ---
-      let fireworksInterval;
-      function startFinaleEffects() {
-        const duration = 15 * 1000;
-        const animationEnd = Date.now() + duration;
-        const defaults = {
-          startVelocity: 30,
-          spread: 360,
-          ticks: 60,
-          zIndex: 0,
-        };
-
-        function randomInRange(min, max) {
-          return Math.random() * (max - min) + min;
+        var fr = 0;
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          if (fr % 40 === 0) launch();
+          fr++;
+          for (var i = parts.length - 1; i >= 0; i--) {
+            var p = parts[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.05;
+            p.life -= 0.015;
+            if (p.life <= 0) {
+              parts.splice(i, 1);
+              continue;
+            }
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          fwAnim = requestAnimationFrame(animate);
         }
-
-        fireworksInterval = setInterval(function () {
-          const timeLeft = animationEnd - Date.now();
-          if (timeLeft <= 0) return clearInterval(fireworksInterval);
-          const particleCount = 50 * (timeLeft / duration);
-          confetti(
-            Object.assign({}, defaults, {
-              particleCount,
-              origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-            }),
-          );
-          confetti(
-            Object.assign({}, defaults, {
-              particleCount,
-              origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-            }),
-          );
-        }, 250);
+        animate();
       }
 
-      function triggerConfetti() {
-        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+      function replay() {
+        if (fwAnim) cancelAnimationFrame(fwAnim);
+        var cv = document.getElementById("fireworksCanvas").getContext("2d");
+        if (cv) cv.clearRect(0, 0, 99999, 99999);
+        buildCandles();
+        initWishes();
+        document.getElementById("envelope").classList.remove("open");
+        showPhase(1);
       }
 
-      // --- Reset App ---
-      function resetApp() {
-        clearInterval(fireworksInterval);
-
-        // Reset Phase 1/2
-        document
-          .querySelector("#phase1 .box-wrapper")
-          .classList.remove("opened");
-        document.querySelector("#phase1 .tap-text").style.opacity = 1;
-        document.getElementById("revealText").classList.remove("show");
-
-        // Reset Phase 3
-        blows = 0;
-        document.getElementById("blowCounter").innerText = `BLOW COUNTER: 0/5`;
-        document.getElementById("blowProgress").style.width = `0%`;
-        document
-          .querySelectorAll(".candle-item")
-          .forEach((c) => c.classList.remove("blown"));
-
-        // Reset Phase 4
-        document.getElementById("wishBoxes").style.display = "grid";
-        document.getElementById("p4Subtitle").style.display = "block";
-        document.getElementById("wishScroll").classList.remove("show");
-
-        // Go home
-        goToPhase(1);
-      }
+      buildCandles();
+      initWishes();
+      showPhase(1);
     </script>
   </body>
 </html>
